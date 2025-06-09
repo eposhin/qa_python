@@ -16,8 +16,10 @@ class TestBooksCollector:
         collector.add_new_book('Лукоморье')
         assert collector.get_book_genre('Лукоморье') == ''
 
-    def test_set_genre_for_existing_book(self, new_book):
-        assert new_book.get_book_genre('Фунтик') == 'Мультфильмы'
+    def test_set_genre_for_existing_book(self, collector):
+        collector.add_new_book('Фунтик')
+        collector.set_book_genre('Фунтик', 'Мультфильмы')
+        assert collector.get_book_genre('Фунтик') == 'Мультфильмы'
 
     def test_cannot_set_invalid_genre(self, collector):
         collector.add_new_book('Лукоморье')
@@ -34,9 +36,6 @@ class TestBooksCollector:
         collector.set_book_genre(book, genre)
         assert book in collector.get_books_with_specific_genre(genre)
 
-    def test_get_book_genre_name(self, new_book):
-        assert new_book.get_book_genre('Фунтик') == 'Мультфильмы'
-
     def test_add_duplicate_book_fails(self, collector):
         collector.add_new_book('Фунтик')
         collector.add_new_book('Фунтик')
@@ -48,28 +47,46 @@ class TestBooksCollector:
         collector.add_book_in_favorites('Книга')
         assert len(collector.get_list_of_favorites_books()) == 1
 
-    def test_remove_from_favorites(self, new_book):
-        new_book.add_book_in_favorites('Фунтик')
-        new_book.delete_book_from_favorites('Фунтик')
-        assert 'Фунтик' not in new_book.get_list_of_favorites_books()
+    def test_remove_from_favorites(self, collector):
+        collector.add_new_book('Фунтик')
+        collector.set_book_genre('Фунтик', 'Мультфильмы')
+        collector.add_book_in_favorites('Фунтик')
+        collector.delete_book_from_favorites('Фунтик')
+        assert 'Фунтик' not in collector.get_list_of_favorites_books()
 
-    def test_add_book_in_favorites_existing_book(self, new_book):
-        new_book.add_book_in_favorites('Лукоморье')
-        assert new_book.get_list_of_favorites_books() == []
+    def test_add_book_in_favorites_existing_book(self, collector):
+        collector.add_new_book('Фунтик')
+        collector.set_book_genre('Фунтик', 'Мультфильмы')
+        collector.add_book_in_favorites('Лукоморье')
+        assert collector.get_list_of_favorites_books() == []
 
-    def test_add_book_in_favorites_add_book_again(self,collector,new_book):
-        new_book.add_book_in_favorites('Фунтик')
+    def test_add_book_in_favorites_add_book_again(self,collector):
+        collector.add_new_book('Фунтик')
+        collector.set_book_genre('Фунтик', 'Мультфильмы')
+        collector.add_book_in_favorites('Фунтик')
         collector.add_book_in_favorites('Фунтик')
         assert collector.favorites == ['Фунтик']
 
-    def test_delete_book_from_favorites_real_book(self, new_book):
-        new_book.add_book_in_favorites('Фунтик')
-        new_book.delete_book_from_favorites('Фунтик')
-        assert new_book.favorites == []
+    def test_delete_book_from_favorites_real_book(self, collector):
+        collector.add_book_in_favorites('Фунтик')
+        collector.delete_book_from_favorites('Фунтик')
+        assert collector.favorites == []
 
     def test_delete_book_from_favorites_unreal_book(self, collector):
         collector.delete_book_from_favorites('Сказки Пушкина')
         assert collector.favorites == []
 
-    def test_get_list_of_favorites_books_empty_list(self, new_book):
-        assert new_book.favorites == []
+    def test_get_list_of_favorites_books_empty_list(self, collector):
+        collector.add_new_book('Фунтик')
+        collector.set_book_genre('Фунтик', 'Мультфильмы')
+        assert collector.favorites == []
+
+    def test_get_list_of_favorites_books (self,collector):
+        collector.add_new_book('Фунтик')
+        collector.add_book_in_favorites('Фунтик')
+        assert collector.favorites == ['Фунтик']
+
+    def test_get_books_genre (self,collector):
+        collector.add_new_book('Три кота')
+        collector.set_book_genre('Три кота', 'Мультфильмы')
+        assert collector.get_book_genre('Три кота') == 'Мультфильмы'
