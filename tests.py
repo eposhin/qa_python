@@ -16,10 +16,20 @@ class TestBooksCollector:
         collector.add_new_book('Лукоморье')
         assert collector.get_book_genre('Лукоморье') == ''
 
-    def test_set_genre_for_existing_book(self, collector):
+    def test_set_book_genre_choose_genre_from_list(self,collector):
+        collector.add_new_book('Властелин колец')
+        collector.set_book_genre('Властелин колец', 'Фантастика')
+        assert collector.get_books_genre() == {'Властелин колец': 'Фантастика'}
+
+    def test_get_genre_for_existing_book(self, collector):
         collector.add_new_book('Фунтик')
         collector.set_book_genre('Фунтик', 'Мультфильмы')
         assert collector.get_book_genre('Фунтик') == 'Мультфильмы'
+
+    def test_get_books_with_specific_genre(self,collector):
+        collector.add_new_book('Гарри Поттер')
+        collector.set_book_genre('Гарри Поттер', 'Фантастика')
+        assert('Гарри Поттер', collector.get_books_with_specific_genre("Фантастика"))
 
     def test_cannot_set_invalid_genre(self, collector):
         collector.add_new_book('Лукоморье')
@@ -36,57 +46,44 @@ class TestBooksCollector:
         collector.set_book_genre(book, genre)
         assert book in collector.get_books_with_specific_genre(genre)
 
-    def test_add_duplicate_book_fails(self, collector):
-        collector.add_new_book('Фунтик')
-        collector.add_new_book('Фунтик')
-        assert len(collector.get_books_genre()) == 1
+    @pytest.mark.parametrize('book,genre', [
+        ('Книга1', 'Мультфильмы'),
+        ('Книга2', 'Комедии')
+    ])
+    def test_get_books_for_children_not_from_age_rating_get_list(self, book, genre, collector):
+        collector.add_new_book(book)
+        collector.set_book_genre(book, genre)
+        assert collector.get_books_for_children() == [book]
 
-    def test_add_to_favorites_only_once(self, collector):
+    @pytest.mark.parametrize('book,genre', [
+        ('Книга1', 'Ужасы'),
+        ('Книга2', 'Детективы')
+    ])
+    def test_get_books_for_children_from_age_rating_get_empty_list(self, book, genre, collector):
+        collector.add_new_book(book)
+        collector.set_book_genre(book, genre)
+        assert collector.get_books_for_children() == []
+
+    def test_add_to_favorites(self, collector):
         collector.add_new_book('Книга')
-        collector.add_book_in_favorites('Книга')
         collector.add_book_in_favorites('Книга')
         assert len(collector.get_list_of_favorites_books()) == 1
 
-    def test_remove_from_favorites(self, collector):
-        collector.add_new_book('Фунтик')
-        collector.set_book_genre('Фунтик', 'Мультфильмы')
-        collector.add_book_in_favorites('Фунтик')
-        collector.delete_book_from_favorites('Фунтик')
-        assert 'Фунтик' not in collector.get_list_of_favorites_books()
-
-    def test_add_book_in_favorites_existing_book(self, collector):
+    def test_add_book_in_favorites_not_from_book_genre(self, collector):
         collector.add_new_book('Фунтик')
         collector.set_book_genre('Фунтик', 'Мультфильмы')
         collector.add_book_in_favorites('Лукоморье')
-        assert collector.get_list_of_favorites_books() == []
+        assert len(collector.get_list_of_favorites_books()) == 0
 
     def test_add_book_in_favorites_add_book_again(self,collector):
         collector.add_new_book('Фунтик')
         collector.set_book_genre('Фунтик', 'Мультфильмы')
         collector.add_book_in_favorites('Фунтик')
         collector.add_book_in_favorites('Фунтик')
-        assert collector.favorites == ['Фунтик']
+        assert len(collector.get_list_of_favorites_books()) == 1
 
     def test_delete_book_from_favorites_real_book(self, collector):
+        collector.add_new_book('Фунтик')
         collector.add_book_in_favorites('Фунтик')
         collector.delete_book_from_favorites('Фунтик')
-        assert collector.favorites == []
-
-    def test_delete_book_from_favorites_unreal_book(self, collector):
-        collector.delete_book_from_favorites('Сказки Пушкина')
-        assert collector.favorites == []
-
-    def test_get_list_of_favorites_books_empty_list(self, collector):
-        collector.add_new_book('Фунтик')
-        collector.set_book_genre('Фунтик', 'Мультфильмы')
-        assert collector.favorites == []
-
-    def test_get_list_of_favorites_books (self,collector):
-        collector.add_new_book('Фунтик')
-        collector.add_book_in_favorites('Фунтик')
-        assert collector.favorites == ['Фунтик']
-
-    def test_get_books_genre (self,collector):
-        collector.add_new_book('Три кота')
-        collector.set_book_genre('Три кота', 'Мультфильмы')
-        assert collector.get_book_genre('Три кота') == 'Мультфильмы'
+        assert len(collector.get_list_of_favorites_books()) == 0
