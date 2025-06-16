@@ -12,7 +12,9 @@
 11. test_add_to_favorites
 12. test_add_book_in_favorites_add_book_again
 13. test_delete_book_from_favorites_real_book
+14. test_get_books_genre
 
 Исправления:
-1. тщательно пересмотрел все тесты. Прошелся по всем методам, которые нужно проверить
-2. 
+1.  Исправил test_get_books_for_children_not_from_age_rating_get_list
+2. Исправил test_get_books_with_specific_genre
+3. Добавил в самом конце test_get_books_genre и test_get_list_of_favorites_books
