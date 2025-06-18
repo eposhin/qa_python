@@ -1,1 +1,20 @@
-# qa_python
+Список проверок
+1. test_add_new_book_two_books
+2. test_add_empty_title_not_added
+3. test_new_book_has_empty_genre
+4. test_set_book_genre_choose_genre_from_list
+5. test_get_genre_for_existing_book
+6. test_get_books_with_specific_genre
+7. test_cannot_set_invalid_genre
+8. test_get_books_by_genre
+9. test_get_books_for_children_not_from_age_rating_get_list
+10. test_get_books_for_children_from_age_rating_get_empty_list
+11. test_add_to_favorites
+12. test_add_book_in_favorites_add_book_again
+13. test_delete_book_from_favorites_real_book
+14. test_get_books_genre
+
+Исправления:
+1.  Исправил test_get_books_for_children_not_from_age_rating_get_list
+2. Исправил test_get_books_with_specific_genre
+3. Добавил в самом конце test_get_books_genre и test_get_list_of_favorites_books
